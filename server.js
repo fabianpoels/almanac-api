@@ -1,11 +1,6 @@
 import { app } from './app/index.js'
 import { config, logger } from './app/config/index.js'
-
-let server
-
-server = app.listen(config.port, () => {
-  logger.info(`APP RUNNING ON PORT ${config.port}`)
-})
+import mongoose from 'mongoose'
 
 const exitHandler = () => {
   if (server) {
@@ -21,6 +16,18 @@ const exitHandler = () => {
 const unexpectedErrorHandler = (error) => {
   logger.error(error)
   exitHandler()
+}
+
+let server
+
+try {
+  await mongoose.connect(config.mongodb.url, config.mongodb.options)
+  logger.info('CONNECTED TO MONGODB')
+  server = app.listen(config.port, () => {
+    logger.info(`APP RUNNING ON PORT ${config.port}`)
+  })
+} catch (error) {
+  unexpectedErrorHandler(error)
 }
 
 process.on('uncaughtException', unexpectedErrorHandler)

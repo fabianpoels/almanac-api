@@ -15,6 +15,7 @@
     "express-mongo-sanitize": "^2.2.0",
     "helmet": "^7.1.0",
     "http-status": "^1.7.4",
+    "mongoose": "^8.3.2",
     "morgan": "^1.10.0",
     "winston": "^3.13.0",
     "xss-clean": "^0.1.4"
