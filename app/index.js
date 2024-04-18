@@ -1,0 +1,37 @@
+import express from 'express'
+import morgan from './config/morgan.js'
+import helmet from 'helmet'
+import xss from 'xss-clean'
+import compression from 'compression'
+import cors from 'cors'
+import mongoSanitize from 'express-mongo-sanitize'
+
+import routes from './routes/index.js'
+
+const app = express()
+
+// logging middleware
+app.use(morgan.successHandler)
+app.use(morgan.errorHandler)
+
+// security HTTP headers
+app.use(helmet())
+
+// parse json request body
+app.use(express.json())
+
+// parse urlencoded request body
+app.use(express.urlencoded({ extended: true }))
+
+app.use(xss())
+app.use(mongoSanitize())
+app.use(compression())
+
+// enable cors
+app.use(cors())
+app.options('*', cors())
+
+// API routes
+app.use('/api', routes)
+
+export { app }
