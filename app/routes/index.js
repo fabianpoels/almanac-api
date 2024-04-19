@@ -1,8 +1,16 @@
 import express from 'express'
-import report from './report.js'
-
 const router = express.Router()
 
-router.use('/reports', report)
+// ROUTES
+import admin from './admin/index.js'
+
+// CONTROLLERS
+import publicController from './../controllers/public.controller.js'
+
+
+// MOUNT
+router.use('/admin', admin)
+router.route('/reports').get(publicController.reports)
+router.route('/categories').get(publicController.categories)
 
 export default router

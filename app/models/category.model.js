@@ -1,44 +1,43 @@
 import mongoose from 'mongoose'
 import config from './../config/config.js'
 
-const reportSchema = mongoose.Schema(
+const categorySchema = mongoose.Schema(
   {
     title: {
       type: String,
       required: true,
       trim: true,
     },
-    category: {
+    key: {
       type: String,
       required: true,
       trim: true,
     },
-    description: String,
-    activeFrom: String,
-    activeUntil: String,
-    status: {
+    color: {
       type: String,
       required: true,
-      default: config.defaultStatus,
+      trim: true
     },
-    user: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
+    icon: {
+      type: String,
       required: true,
+      trim: true,
     },
-    geoData: mongoose.Schema.Types.Mixed,
+    active: {
+      type: Boolean,
+      default: true
+    }
   },
   {
     timestamps: true,
     toJSON: {
       transform: function(doc, ret) {
-        ret.id = ret._id;
         delete ret._id;
       }
     }
   }
 )
 
-const Report = mongoose.model('Report', reportSchema)
+const Category = mongoose.model('Category', categorySchema)
 
-export default Report
+export default Category
