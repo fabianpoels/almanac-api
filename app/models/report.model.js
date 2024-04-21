@@ -21,11 +21,11 @@ const reportSchema = mongoose.Schema(
       required: true,
       default: config.defaultStatus,
     },
-    user: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
-      required: true,
-    },
+    // user: {
+    //   type: mongoose.Schema.Types.ObjectId,
+    //   ref: 'User',
+    //   required: true,
+    // },
     geoData: mongoose.Schema.Types.Mixed,
   },
   {
