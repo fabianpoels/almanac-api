@@ -7,12 +7,14 @@ const config = Object.freeze({
     url: 'mongodb://localhost:27017/almanac',
     options: {},
   },
-  status: {
-    draft: 'draft',
-    published: 'published',
-    archived: 'archived',
-  },
-  defaultStatus: 'draft',
+  report: {
+    status: {
+      draft: 'draft',
+      published: 'published',
+      archived: 'archived',
+    },
+    defaultStatus: 'draft',
+  }
 })
 
 export default config
