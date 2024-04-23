@@ -1,4 +1,5 @@
 import 'dotenv/config'
+import argon2 from 'argon2'
 
 const config = Object.freeze({
   env: process.env.ENV,
@@ -14,7 +15,20 @@ const config = Object.freeze({
       archived: 'archived',
     },
     defaultStatus: 'draft',
-  }
+  },
+  passwordValidationRegexes: [
+    { expr: /.{8,}/ }, // min 8 letters,
+    { expr: /[0-9]/ }, // numbers from 0 - 9
+    { expr: /[a-z]/ }, // letters from a - z (lowercase)
+    { expr: /[A-Z]/ }, // letters from A-Z (uppercase),
+    { expr: /[^A-Za-z0-9]/ }, // special characters
+  ],
+  argon2hashConfig: {
+    type: argon2.argon2id,
+    memoryCost: 47104,
+    timeCost: 1,
+    parallelism: 1,
+  },
 })
 
 export default config
