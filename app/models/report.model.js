@@ -1,5 +1,5 @@
 import mongoose from 'mongoose'
-import config from './../config/config.js'
+import { config } from './../config/index.js'
 
 const reportSchema = mongoose.Schema(
   {
@@ -31,11 +31,17 @@ const reportSchema = mongoose.Schema(
   {
     timestamps: true,
     toJSON: {
-      transform: function(doc, ret) {
-        ret.id = ret._id;
-        delete ret._id;
-      }
-    }
+      transform: (doc, ret) => {
+        ret.id = doc._id
+        delete ret._id
+      },
+    },
+    toObject: {
+      transform: (doc, ret) => {
+        ret.id = doc._id
+        delete ret._id
+      },
+    },
   }
 )
 

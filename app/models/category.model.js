@@ -1,5 +1,5 @@
 import mongoose from 'mongoose'
-import config from './../config/config.js'
+import { config } from './../config/index.js'
 
 const categorySchema = mongoose.Schema(
   {
@@ -16,7 +16,7 @@ const categorySchema = mongoose.Schema(
     color: {
       type: String,
       required: true,
-      trim: true
+      trim: true,
     },
     icon: {
       type: String,
@@ -25,16 +25,23 @@ const categorySchema = mongoose.Schema(
     },
     active: {
       type: Boolean,
-      default: true
-    }
+      default: true,
+    },
   },
   {
     timestamps: true,
     toJSON: {
-      transform: function(doc, ret) {
-        delete ret._id;
-      }
-    }
+      transform: (doc, ret) => {
+        ret.id = doc._id
+        delete ret._id
+      },
+    },
+    toObject: {
+      transform: (doc, ret) => {
+        ret.id = doc._id
+        delete ret._id
+      },
+    },
   }
 )
 

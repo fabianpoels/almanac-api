@@ -1,6 +1,7 @@
 import httpStatus from 'http-status'
-import { Category, Report } from './../models/index.js'
-import logger from './../config/logger.js'
+import { Category, Report } from '../models/index.js'
+import { ArraySerializer, CategorySerializer } from '../serializers/serializers.js'
+import logger from '../config/logger.js'
 
 const reports = async (req, res, next) => {
   try {
@@ -14,7 +15,7 @@ const reports = async (req, res, next) => {
 const categories = async (req, res, next) => {
   try {
     const categories = await Category.find()
-    res.send(categories)
+    res.send(ArraySerializer.serialize(categories, { serializer: CategorySerializer }))
   } catch (e) {
     next(e)
   }

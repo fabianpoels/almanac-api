@@ -1,5 +1,6 @@
 import { app } from './app/index.js'
 import { config, logger } from './app/config/index.js'
+import redis from './app/redis/redis.js'
 import mongoose from 'mongoose'
 
 const exitHandler = () => {
@@ -25,6 +26,7 @@ try {
   logger.info('CONNECTED TO MONGODB')
   server = app.listen(config.port, () => {
     logger.info(`APP RUNNING ON PORT ${config.port}`)
+    logger.info(`APP ENV: ${config.env}`)
   })
 } catch (error) {
   unexpectedErrorHandler(error)
