@@ -8,6 +8,7 @@ import mongoSanitize from 'express-mongo-sanitize'
 import cookieParser from 'cookie-parser'
 
 import routes from './routes/index.js'
+import { config, logger } from './config/index.js'
 
 const app = express()
 
@@ -29,9 +30,20 @@ app.use(mongoSanitize())
 app.use(compression())
 app.use(cookieParser())
 
+const corsOptions = {
+  origin: (origin, cb) => {
+    if (origin && config.corsWhitelist.includes(origin)) {
+      cb(null, true)
+    } else {
+      cb(origin, false)
+    }
+  },
+  credentials: true,
+}
+
 // enable cors
-app.use(cors())
-app.options('*', cors())
+app.options('*', cors(corsOptions))
+app.use(cors(corsOptions))
 
 // API routes
 app.use('/api', routes)

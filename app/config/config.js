@@ -44,6 +44,7 @@ const config = Object.freeze({
     timeCost: 2,
     parallelism: 1,
   },
+  corsWhitelist: ['http://localhost:9000'],
 })
 
 export default config
