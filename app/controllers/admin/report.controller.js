@@ -7,18 +7,21 @@ const index = async (req, res, next) => {
   try {
     const reports = await Report.find()
     res.send(reports)
-  } catch(e) {
+  } catch (e) {
     next(e)
   }
 }
 
 const create = async (req, res, next) => {
-  const report = new Report(req.body.report)
+  const report = new Report({
+    ...req.body.report,
+    user: req.user._id,
+  })
   try {
     await report.save()
     res.status(201)
     res.send(report)
-  } catch(e) {
+  } catch (e) {
     if (e instanceof mongoose.Error.ValidationError) res.status(422)
     next(e)
   }

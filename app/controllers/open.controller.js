@@ -5,7 +5,7 @@ import logger from '../config/logger.js'
 
 const reports = async (req, res, next) => {
   try {
-    const reports = await Report.find()
+    const reports = await Report.find({ status: 'published' }).exec()
     res.send(reports)
   } catch (e) {
     next(e)

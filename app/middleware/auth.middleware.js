@@ -6,10 +6,7 @@ const authMiddleware = async function (req, res, next) {
   const authHeader = req.headers['authorization']
   const token = authHeader?.split(' ')[1]
 
-  logger.info('in auth')
-
   if (!token) {
-    logger.info('no token')
     res.status(401)
     res.send()
   }
@@ -21,7 +18,6 @@ const authMiddleware = async function (req, res, next) {
       req.user = dbUser
       next()
     } else {
-      logger.info('no user')
       res.status(401)
       res.send()
     }
