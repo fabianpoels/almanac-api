@@ -15,18 +15,25 @@ const login = async (req, res, next) => {
       emailVerified: true,
     }).exec()
     if (user && (await user.validPassword(password))) {
+      // generate jwt
       const serializedUser = UserSerializer.serialize(user)
       const token = jwt.sign({ user: serializedUser }, config.jwtSecret, {
         expiresIn: config.jwtExpire,
       })
+
+      // generate refresh token and put it in the cache
+      // also put the reverse in the cache, so we can lookup the refresh token if we want to expire it for a user
       const randomKey = crypto.randomBytes(16).toString('hex')
-      await redis.set(randomKey, user._id.toString(), { EX: 7 * 24 * 60 * 60 })
-      await redis.set(user._id.toString(), randomKey, { EX: 7 * 24 * 60 * 60 })
+      await redis.set(randomKey, user._id.toString(), { EX: config.refreshTokenExpiration })
+      await redis.set(user._id.toString(), randomKey, { EX: config.refreshTokenExpiration })
+
+      // set the refresh token as cookie
       res.cookie('refreshToken', randomKey, {
         httpOnly: true,
         sameSite: 'strict',
-        expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+        expires: new Date(Date.now() + config.refreshTokenExpiration * 1000),
       })
+
       res.status(200)
       return res.send({
         user: serializedUser,
@@ -43,7 +50,41 @@ const login = async (req, res, next) => {
   }
 }
 
-const refreshToken = (req, res, next) => {}
+const refreshToken = async (req, res, next) => {
+  if (req.cookies.refreshToken) {
+    try {
+      // get the token value from the cache
+      const userId = await redis.get(req.cookies.refreshToken)
+      if (userId) {
+        // lookup the user in the db
+        const user = await User.findOne({
+          _id: userId,
+          active: true,
+          emailVerified: true,
+        }).exec()
+        if (user) {
+          // generate new JWT
+          const serializedUser = UserSerializer.serialize(user)
+          const token = jwt.sign({ user: serializedUser }, config.jwtSecret, {
+            expiresIn: config.jwtExpire,
+          })
+          res.status(200)
+          res.send({
+            user: serializedUser,
+            jwt: token,
+          })
+          return
+        }
+      }
+    } catch (e) {
+      logger.error(e)
+      res.status(401)
+      res.send()
+    }
+  }
+  res.status(401)
+  res.send()
+}
 
 const logout = (req, res, next) => {}
 

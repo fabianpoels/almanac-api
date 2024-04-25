@@ -6,6 +6,7 @@ const config = Object.freeze({
   port: process.env.PORT,
   jwtSecret: process.env.JWT_SECRET,
   jwtExpire: '15m',
+  refreshTokenExpiration: 24 * 60 * 60, // 1 day in seconds
   mongodb: {
     url: 'mongodb://localhost:27017/almanac',
     options: {},

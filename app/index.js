@@ -5,6 +5,7 @@ import xss from 'xss-clean'
 import compression from 'compression'
 import cors from 'cors'
 import mongoSanitize from 'express-mongo-sanitize'
+import cookieParser from 'cookie-parser'
 
 import routes from './routes/index.js'
 
@@ -26,6 +27,7 @@ app.use(express.urlencoded({ extended: true }))
 app.use(xss())
 app.use(mongoSanitize())
 app.use(compression())
+app.use(cookieParser())
 
 // enable cors
 app.use(cors())
