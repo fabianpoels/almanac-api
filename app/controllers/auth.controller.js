@@ -86,6 +86,25 @@ const refreshToken = async (req, res, next) => {
   res.send()
 }
 
-const logout = (req, res, next) => {}
+const logout = async (req, res, next) => {
+  if (req.user) {
+    try {
+      // delete redis keys associated with the refresh token
+      const refreshToken = await redis.get(req.user.id)
+      await redis.del(req.user.id)
+      await redis.del(refreshToken)
+
+      res.status(200)
+      res.send()
+    } catch (e) {
+      logger.error(e)
+      res.status(401)
+      res.send()
+    }
+  } else {
+    res.status(401)
+    res.send()
+  }
+}
 
 export default { login, refreshToken, logout }
